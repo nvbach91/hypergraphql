@@ -46,10 +46,6 @@ public class GraphqlConfig {
     public String graphiQLPath() {
         return graphiqlPath;
     }
-    @Deprecated
-    public String pingPath() {
-        return pingPath();
-    }
     public String pingPath() {
         return pingPath;
     }
