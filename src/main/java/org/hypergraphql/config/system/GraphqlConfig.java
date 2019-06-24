@@ -11,11 +11,13 @@ public class GraphqlConfig {
     private Integer port;
     private String graphqlPath;
     private String graphiqlPath;
+    private String pingPath;
 
     @JsonCreator
     public GraphqlConfig(@JsonProperty("port") Integer port,
                          @JsonProperty("graphql") String graphqlPath,
-                         @JsonProperty("graphiql") String graphiqlPath
+                         @JsonProperty("graphiql") String graphiqlPath,
+                         @JsonProperty("ping") String pingPath
     ) {
         if(port == null) {
             this.port = generateRandomPort();
@@ -24,6 +26,7 @@ public class GraphqlConfig {
         }
         this.graphqlPath = graphqlPath;
         this.graphiqlPath = graphiqlPath;
+        this.pingPath = pingPath;
     }
 
     public Integer port() {
@@ -42,6 +45,13 @@ public class GraphqlConfig {
     }
     public String graphiQLPath() {
         return graphiqlPath;
+    }
+    @Deprecated
+    public String pingPath() {
+        return pingPath();
+    }
+    public String pingPath() {
+        return pingPath;
     }
 
     @JsonIgnore

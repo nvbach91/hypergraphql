@@ -23,12 +23,14 @@ public class SPARQLServiceConverter {
     private final static String URIS = "uris";
     private final static String NODE_ID = "nodeId";
     private final static String LANG = "lang";
+    private final static String REGEX = "regex";
     private final static String FIELDS = "fields";
     private final static String ARGS = "args";
     private final static String TARGET_NAME = "targetName";
     private final static String PARENT_ID = "parentId";
     private final static String LIMIT = "limit";
     private final static String OFFSET = "offset";
+    private String filters = "";
 
     private final HGQLSchema schema;
 
@@ -45,7 +47,7 @@ public class SPARQLServiceConverter {
     }
 
     private String selectQueryClause(String where, String graphID) {
-        return  "SELECT * WHERE { " + graphClause(graphID, where) + " } ";
+        return  "SELECT * WHERE { " + graphClause(graphID, where) + " " + filters + " } ";
     }
 
     private String graphClause(String graphID, String where) {
@@ -117,6 +119,13 @@ public class SPARQLServiceConverter {
         String nodeVar = toVar(field.get(NODE_ID).asText());
         JsonNode args = field.get(ARGS);
         return (args.has(LANG)) ? String.format(PATTERN, nodeVar, args.get(LANG).asText()) : "";
+    }
+
+    private String regexFilterClause(JsonNode field) {
+        final String PATTERN = "FILTER (REGEX(STR(%s), '%s', 'i')) . ";
+        String nodeVar = toVar(field.get(NODE_ID).asText());
+        JsonNode args = field.get(ARGS);
+        return (args.has(REGEX)) ? String.format(PATTERN, nodeVar, args.get(REGEX).asText()) : "";
     }
 
     private String fieldPattern(String parentId, String nodeId, String predicateURI, String typeURI) {
@@ -208,6 +217,7 @@ public class SPARQLServiceConverter {
         String nodeId = fieldJson.get(NODE_ID).asText();
 
         String langFilter = langFilterClause(fieldJson);
+        filters += ' ' + regexFilterClause(fieldJson);
 
         String typeURI = (schema.getTypes().containsKey(targetName)) ? schema.getTypes().get(targetName).getId() : "";
 
