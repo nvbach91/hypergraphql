@@ -31,6 +31,7 @@ public class SPARQLServiceConverter {
     private final static String LIMIT = "limit";
     private final static String OFFSET = "offset";
     private String filters = "";
+    private String rootLimitOffset = "";
 
     private final HGQLSchema schema;
 
@@ -43,11 +44,11 @@ public class SPARQLServiceConverter {
     }
 
     private String selectSubqueryClause(String id, String sparqlPattern, String limitOffset) {
-        return "{ SELECT " + toVar(id) + " WHERE { " + sparqlPattern + " } " + limitOffset + " } ";
+        return "{ SELECT " + toVar(id) + " WHERE { " + sparqlPattern + " } " + /*limitOffset +*/ " } ";
     }
 
     private String selectQueryClause(String where, String graphID) {
-        return  "SELECT * WHERE { " + graphClause(graphID, where) + " " + filters + " } ";
+        return  "SELECT * WHERE { " + graphClause(graphID, where) + " " + filters + " } " + rootLimitOffset ;
     }
 
     private String graphClause(String graphID, String where) {
@@ -180,6 +181,7 @@ public class SPARQLServiceConverter {
         String graphID = ((SPARQLEndpointService) schema.getQueryFields().get(queryField.get(NAME).asText()).service()).getGraph();
         String nodeId = queryField.get(NODE_ID).asText();
         String limitOffsetSTR = limitOffsetClause(queryField);
+        rootLimitOffset = limitOffsetSTR;
         String selectTriple = toTriple(toVar(nodeId), RDF_TYPE_URI, uriToResource(targetURI));
         String rootSubquery = selectSubqueryClause(nodeId, selectTriple, limitOffsetSTR);
 
