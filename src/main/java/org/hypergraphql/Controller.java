@@ -71,6 +71,7 @@ public class Controller {
         System.out.println("HGQL service name: " + config.getName());
         System.out.println("GraphQL server started at: http://localhost:" + config.getGraphqlConfig().port() + config.getGraphqlConfig().graphQLPath());
         System.out.println("GraphiQL UI available at: http://localhost:" + config.getGraphqlConfig().port() + config.getGraphqlConfig().graphiQLPath());
+        System.out.println("Ping available at: http://localhost:" + config.getGraphqlConfig().port() + config.getGraphqlConfig().pingPath());
 
         hgqlService = Service.ignite().port(config.getGraphqlConfig().port());
 
@@ -83,6 +84,11 @@ public class Controller {
         hgqlService.options("/*", (req, res) -> {
             setResponseHeaders(req, res);
             return "";
+        });
+
+        hgqlService.get(config.getGraphqlConfig().pingPath(), (req, res) -> {
+            setResponseHeaders(req, res);
+            return "OK";
         });
 
         // get method for accessing the GraphiQL UI

@@ -60,6 +60,7 @@ public class HGQLSchemaWiring {
         put("limit", new GraphQLArgument("limit", GraphQLInt));
         put("offset", new GraphQLArgument("offset", GraphQLInt));
         put("lang", new GraphQLArgument("lang", GraphQLString));
+        put("regex", new GraphQLArgument("regex", GraphQLString));
         put("uris", new GraphQLArgument("uris", new GraphQLNonNull(new GraphQLList(GraphQLID))));
     }};
 
@@ -232,6 +233,7 @@ public class HGQLSchemaWiring {
 
         if (field.getTargetName().equals("String")) {
             args.add(defaultArguments.get("lang"));
+            args.add(defaultArguments.get("regex"));
         }
 
         if(field.getService() == null) {
